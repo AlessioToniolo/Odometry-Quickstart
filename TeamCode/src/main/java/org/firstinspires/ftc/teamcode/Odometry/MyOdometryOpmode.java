@@ -39,8 +39,15 @@ public class MyOdometryOpmode extends LinearOpMode {
         Thread positionThread = new Thread(globalPositionUpdate);
         positionThread.start();
 
+        // TO-DO  If x, y, and theta coordinates return negative after you run GlobalCoordinatePositionUpdateSample.java on
+        //      your robot and push your robot forward then right
+        globalPositionUpdate.reverseLeftEncoder();
         globalPositionUpdate.reverseRightEncoder();
         globalPositionUpdate.reverseNormalEncoder();
+
+        /* Example run of the goToPosition method
+         * goToPosition(0, 24*COUNTS_PER_INCH, 0.5, 0, 1*COUNTS_PER_INCH);
+         */
 
         while(opModeIsActive()){
             //Display Global (x, y, theta) coordinates
@@ -60,6 +67,25 @@ public class MyOdometryOpmode extends LinearOpMode {
         globalPositionUpdate.stop();
 
     }
+
+    public void goToPosition(double targetXPosition, double targetYPosition, double robotPower, double desiredRobotOrientation, double allowableDistanceError) {
+      double distanceToXTarget = targetXPosition - globalPositionUpdate.returnXCoordinate();
+      double distanceToYTarget = targetYPosition - globalPositionUpdate.returnYCoordinate();
+
+      double distance = Math.hypot(distanceToXTarget, distanceToYTarget);
+      while(opModeIsActive()) {
+         distanceToXTarget = targetXPosition - globalPositionUpdate.returnXCoordinate();
+         distanceToYTarget = targetYPosition - globalPositionUpdate.returnYCoordinate();
+         distance = Math.hypot(distanceToXTarget, distanceToYTarget);
+
+        double robotMovementAngle = Math.toDegrees(Math.atan2(distanceToXTarget, distanceToYTarget));
+
+        double robot movement x component = calculateX(robotMovementAngle, robotPower);
+        double robot movement y component = calculateY(robotMovementAngle, robotPower);
+        double pivotCorrection = desiredRobotOrientation - globalPositionUpdate.returnOrientation();
+
+    }
+  }
 
     private void initDriveHardwareMap(String rfName, String rbName, String lfName, String lbName, String vlEncoderName, String vrEncoderName, String hEncoderName){
         right_front = hardwareMap.dcMotor.get(rfName);

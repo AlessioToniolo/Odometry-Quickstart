@@ -20,7 +20,7 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
     //The amount of encoder ticks for each inch the robot moves. This will change for each robot and needs to be changed here
     final double COUNTS_PER_INCH = 307.699557;
 
-    //Hardware map names for the encoder wheels. Again, these will change for each robot and need to be updated below
+    //TO-DO  Hardware map names for the encoder wheels. Again, these will change for each robot and need to be updated below
     String verticalLeftEncoderName = "rf", verticalRightEncoderName = "lf", horizontalEncoderName = "lb";
 
     @Override
@@ -71,6 +71,11 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
             telemetry.addData("X Position", globalPositionUpdate.returnXCoordinate() / COUNTS_PER_INCH);
             telemetry.addData("Y Position", globalPositionUpdate.returnYCoordinate() / COUNTS_PER_INCH);
             telemetry.addData("Orientation (Degrees)", globalPositionUpdate.returnOrientation());
+
+            telemetry.addData("Vertical left encoder position", verticalLeft.getCurrentPosition());
+            telemetry.addData("Vertical right encoder position", verticalRight.getCurrentPosition());
+            telemetry.addData("Horizontal left encoder position", horizontal.getCurrentPosition());
+
             telemetry.addData("Thread Active", positionThread.isAlive());
             telemetry.update();
         }
